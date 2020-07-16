@@ -1,10 +1,10 @@
 import { pipe, tap, curry } from "../Basics.ts";
 import * as Result from "./Result.ts";
 
-const add = (a) => (b) => a + b;
-const multiply = (a) => (b) => a * b;
-const subtract = (a) => (b) => b - a;
-const divideBy = (a) => (b) => b / a;
+const add = (a: number) => (b: number) => a + b;
+const multiply = (a: number) => (b: number) => a * b;
+const subtract = (a: number) => (b: number) => b - a;
+const divideBy = (a: number) => (b: number) => b / a;
 
 function extract(fn) {
   return function (result) {
@@ -13,16 +13,16 @@ function extract(fn) {
 }
 
 // identity = map(id) === id
-const identity1 = Result.map((val) => val, Result.Ok(5));
+const identity1 = Result.map((val) => val)(Result.Ok(5));
 const identity2 = Result.Ok(5);
 identity1(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 identity2(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 // composition = compose(map(f), map(g)) === map(compose(f,g))
@@ -49,16 +49,16 @@ const result = firstAddressStreet({
 });
 
 result(
+  (err) => console.log({ err }),
   (ok) =>
     ok(
+      (err2) => err2,
       (ok2) =>
         ok2(
-          (ok3) => console.log(ok3),
           (err3) => err3,
+          (ok3) => console.log(ok3),
         ),
-      (err2) => err2,
     ),
-  (err) => console.log({ err }),
 );
 
 const firstAddressStreet2 = pipe(
@@ -74,8 +74,8 @@ const result2 = firstAddressStreet2({
 });
 
 result2(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 const firstAddressStreet3 = pipe(
@@ -89,8 +89,8 @@ const result3 = firstAddressStreet3({
 });
 
 result3(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 // applicative functors
@@ -100,8 +100,8 @@ const functor = pipe(
 )(Result.Ok(add));
 
 functor(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 const funcError = pipe(
@@ -110,8 +110,8 @@ const funcError = pipe(
 )(Result.Err("This is a broken function"));
 
 funcError(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 const firstArgError = pipe(
@@ -125,18 +125,29 @@ const secondArgError = pipe(
 )(Result.Ok(add));
 
 firstArgError(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
 secondArgError(
-  (ok) => console.log(ok),
   (err) => console.log(err),
+  (ok) => console.log(ok),
 );
 
-function waitOneSecond(val) {
-  return async function () {
-    return await setTimeout(() => val, 1000);
-  };
-}
-console.log(waitOneSecond(6)());
+// Type test
+type TestResult = Result.Result<string, number>;
+const testResult: TestResult = Result.Ok(5);
+
+const transformedTest = Result.map(
+  pipe(
+    add(1),
+    subtract(2),
+    multiply(3),
+    divideBy(4),
+  ),
+)(testResult);
+
+transformedTest(
+  (err) => console.log({ err }),
+  (ok) => console.log({ ok }),
+);

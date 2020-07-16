@@ -1,40 +1,61 @@
-import { pipe, curry } from "../Basics.ts";
+import { pipe, curry, tap } from "../Basics.ts";
 
-export function Ok(val) {
-  return function (destructureOk, _) {
+export type Result<E, A> = (
+  errFunc: (e: E) => any,
+  okFunc: (a: A) => any,
+) => any;
+
+export function Ok<E, A>(val: A): Result<E, A> {
+  return function (_, destructureOk) {
     return destructureOk(val);
   };
 }
 
-export function Err(error) {
-  return function (_, destructureError) {
+export function Err<E, A>(error: E): Result<E, A> {
+  return function (destructureError, _) {
     return destructureError(error);
   };
 }
 
 // extract : (e -> a) -> Result e a -> a
-export function extract(convertErr, result) {
+export function extract<E, A>(
+  convertErr: (e: E) => A,
+  result: Result<E, A>,
+): A {
   return result(
-    (ok, _) => ok,
     (error) => convertErr(error),
+    (ok) => ok,
   );
 }
 
 // map : (a -> b) -> Result x a -> Result x b
-export const map = curry((fn, result) => {
-  return result(
-    (ok) => {
-      return Ok(fn(ok));
-    },
-    (_) => result,
-  );
-});
+// export const map = curry(
+//   <A, B, X>(fn: (a: A) => B, result: Result<X, A>): Result<X, B> => {
+//     return result(
+//       (_) => result,
+//       (ok) => {
+//         return Ok(fn(ok));
+//       },
+//     );
+//   },
+// );
+
+export function map<A, B, X>(fn: (a: A) => B) {
+  return function (result: Result<X, A>): Result<X, B> {
+    return result(
+      (_) => result,
+      (ok) => {
+        return Ok(fn(ok));
+      },
+    );
+  };
+}
 
 // join : Result x (Result x a) -> Result x a
 export const join = (result) => {
   return result(
+    (_) => result,
     (ok) => ok,
-    (err) => err,
   );
 };
 
@@ -49,7 +70,7 @@ export const chain = (fn) => {
 // apply : Result e a -> Result e (a -> b) -> Result e b
 export const apply = curry((rVal, rFn) => {
   return rFn(
-    (ok) => map(ok, rVal),
     (_) => rFn,
+    (ok) => map(ok)(rVal),
   );
 });
