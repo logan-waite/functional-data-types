@@ -303,8 +303,8 @@ function safeParseInt2(str: string): Result.Result<ParseIntErrorType, number> {
     ? Result.Err({ arg: str, message: `${str} is unparsable` })
     : Result.Ok(val);
 }
-// Result.chain comes from here: https://mostly-adequate.gitbooks.io/mostly-adequate-guide/content/ch09.html#my-chain-hits-my-chest
-// it's a combination of join and map, as explained here: https://mostly-adequate.gitbooks.io/mostly-adequate-guide/content/ch09.html#mixing-metaphors
+// Result.chain is a combination of Result.join and Result.map
+//    as explained here: https://mostly-adequate.gitbooks.io/mostly-adequate-guide/content/ch09.html#mixing-metaphors
 
 // * use *
 // parse int ==> safe add ==> normal add ==> result
