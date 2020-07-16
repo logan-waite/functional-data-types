@@ -28,8 +28,6 @@ if (goodVal instanceof Error) {
 }
 
 // Thoughts:
-// 20 lines
-// What does it mean to "Handle the Error"?
 // Type is cleaner and easier to write
 // Requires an if statement to extract values
 //    (unless written as a function, which might not be worth it anyway)
@@ -60,7 +58,6 @@ okVal(
 );
 
 // Thoughts:
-// 18 lines
 // Don't have default Error object
 //    At the same time though, we aren't limited to it.
 //    Though we could probably do a similar thing with the union type
@@ -71,8 +68,6 @@ okVal(
 
 // Round 1 thoughts:
 // Having to return an `Error` seems restrictive, though possibly doesn't need to be.
-// Currently, we are having to write special functions that can handle results
-//    (both returning and receiving), doesn't seem to lend itself to good code reuse.
 // Functional result is slightly more concise, and more declarative, but the Union Type
 //    would be more familiar, and so easier to understand? (at least until one gets
 //    familiar with the other)
