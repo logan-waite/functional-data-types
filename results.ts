@@ -1,4 +1,5 @@
-import { pipe } from "./Basics.ts";
+import * as Result from "./Lambda/Result/index.ts";
+import { pipe } from "./Utils/index.ts";
 
 console.log("\nROUND 1: Naive implementations\n");
 // UNION TYPE RESULT
@@ -34,11 +35,9 @@ if (goodVal instanceof Error) {
 
 // -------------------------------
 // FUNCTIONAL RESULT
-import * as Result from "./Result/Result.ts";
-
-function add2(a: number, b: number): Result.Result<string, number> {
+function add2(a: number, b: number): Result.Result<Error, number> {
   if (Number.isNaN(a) || Number.isNaN(b)) {
-    return Result.Err("Ops");
+    return Result.Err(new Error("Ops"));
   } else {
     return Result.Ok(a + b);
   }
@@ -48,7 +47,7 @@ const errVal = add2(5, NaN);
 const okVal = add2(5, 7);
 
 errVal(
-  (err) => console.log({ err }),
+  (err) => console.log({ err: err.message }),
   (ok) => console.log({ ok }),
 );
 

@@ -1,4 +1,4 @@
-import { pipe, tap, curry } from "../Basics.ts";
+import { pipe, tap, curry } from "../../Utils";
 import * as Result from "./Result.ts";
 
 const add = (a: number) => (b: number) => a + b;

@@ -1,8 +1,6 @@
-interface Functor {
-  static of: (x) => Functor;
-}
+import { inspect } from "../Basics.ts";
 
-export class Result implements Functor {
+export class Result {
   protected _value;
 
   static of(x) {
@@ -12,20 +10,31 @@ export class Result implements Functor {
   protected constructor(x) {
     this._value = x;
   }
-
-  public inspect() {
-    return this._value;
-  }
 }
 
 export class Ok extends Result {
   map(fn) {
     return Result.of(fn(this._value));
   }
+
+  inspect() {
+    return `Ok(${inspect(this._value)})`;
+  }
 }
 
 export class Err extends Result {
+  constructor(x) {
+    super(x);
+  }
   map(fn) {
     return this;
   }
+
+  inspect() {
+    return `Err(${inspect(this._value)})`;
+  }
+}
+
+export function error(x) {
+  return new Err(x);
 }

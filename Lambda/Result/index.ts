@@ -1,4 +1,4 @@
-import { pipe, curry, tap } from "../Basics.ts";
+import { pipe, curry, tap } from "../../Utils/index.ts";
 
 export type Result<E, A> = (
   errFunc: (e: E) => any,
@@ -27,6 +27,8 @@ export function extract<E, A>(
     (ok) => ok,
   );
 }
+
+const extractTest = Ok();
 
 // map : (a -> b) -> Result x a -> Result x b
 // export const map = curry(
